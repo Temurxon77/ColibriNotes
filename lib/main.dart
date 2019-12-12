@@ -5,14 +5,17 @@ void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       //home: MyHomePage(title: 'Flutter Demo Home Page'),
-      home: SignUp()
+      home: SignUp(),
+      routes: <String,WidgetBuilder>{
+        "/login": (context) => SignUp()
+      },
     );
   }
 }

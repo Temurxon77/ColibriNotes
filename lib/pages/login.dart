@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:todoapp/api/signUpApi.dart';
+import 'package:todoapp/pages/constants.dart';
 
 final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 class SignUp extends StatefulWidget {
@@ -6,7 +8,10 @@ class SignUp extends StatefulWidget {
 }
 
 class SignUpState extends State<SignUp> {
-  String stackOption = "Choose";
+  String stackOption;
+  static int rarr = 0x2192;
+  TextEditingController nameController = new TextEditingController();
+  TextEditingController idController = new TextEditingController();
   @override
   Widget build(BuildContext context){
     try{
@@ -32,6 +37,7 @@ class SignUpState extends State<SignUp> {
                     alignment: Alignment.center
                   ),
                   Padding(child: TextFormField(
+                    controller: nameController,
                     decoration: InputDecoration(labelText: "Name:"),
                     validator: (String value){
                       if(value.isEmpty){
@@ -42,6 +48,7 @@ class SignUpState extends State<SignUp> {
                     padding: EdgeInsets.only(left: 15.0,right: 15.0)
                   ),
                   Padding(child: TextFormField(
+                    controller: idController,
                     decoration: InputDecoration(labelText: "ID:"),
                     validator: (String value){
                       if(value.isEmpty){
@@ -51,14 +58,46 @@ class SignUpState extends State<SignUp> {
                     ),
                     padding: EdgeInsets.only(left: 15.0,right: 15.0)
                   ),
-                  Padding(child: 
-                    DropdownButton<String>(
+                  Align(child: 
+                    Padding(child:DropdownButton<String>(
+                      hint: Text("Stack"),
+                      icon: Icon(Icons.arrow_downward),
+                      iconSize: 24,
                       value: stackOption,
-                      items: ,
+                      style: TextStyle(color: Colors.indigo[700]),
+                      onChanged: (String newVal){
+                        setState(() {
+                          stackOption = newVal;
+                        });
+                      },
+                      items: stackOptions.map((String value){
+                          return new DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                      }).toList(),
                     ),
-                    padding: EdgeInsets.only(left: 15.0,right: 15.0)
-                  )
-                ],
+                    padding: EdgeInsets.only(left: 15.0,top: 5.0),
+                    ),
+                    alignment: Alignment.topLeft
+                  ),
+                  FlatButton(
+                    textColor: Colors.indigoAccent,
+                    splashColor: Colors.indigo[600],
+                    onPressed: () async {
+                      if(_formKey.currentState.validate()){
+                         signUpApi({
+                          "name": nameController.text.toString(),
+                          "id": nameController.text.toString(),
+                          "stack": stackOption
+                        }).then((val)=>{
+                          print(val)
+                        });
+                      }
+                     },
+                    child: Text("Continue  ${String.fromCharCode(0x2192)}"),
+                  ),
+                ],  
               )
             ),
             )
@@ -68,7 +107,9 @@ class SignUpState extends State<SignUp> {
       );
       return signUp;
     }catch(e){
-      print(e.toString());
+       print(e.toString());
+      return Center(child: Text("Error!"));
+     
     }
   }
 }
